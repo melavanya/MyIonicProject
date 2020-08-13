@@ -6,6 +6,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { TabsPage } from '../pages/tabs/tabs';
 
 import { CodePush, SyncStatus, InstallMode } from '@ionic-native/code-push';
+import { OneSignal } from '@ionic-native/onesignal/ngx';
+
 
 
 
@@ -17,7 +19,7 @@ export class MyApp {
   rootPage: any = TabsPage;
   ProgressStatus = '';
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private codePush: CodePush, private ngZone: NgZone) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private codePush: CodePush, private ngZone: NgZone,private oneSignal: OneSignal) {
     console.log('browser')
     if (platform.is('cordova')) {
      console.log('is cordova')
@@ -28,6 +30,19 @@ export class MyApp {
         splashScreen.hide();
 
         this.checkCodePush(); //Use the plugin always after platform.ready()
+
+
+         if (platform.is('cordova'))
+             { var notificationOpenedCallback = function(jsonData) {
+              console.log('hurray',JSON.stringify(jsonData))
+              };
+
+              window["plugins"].OneSignal
+              .startInit("35e4f494-3ebe-47da-91a7-18aea40c4a6b")
+              .handleNotificationOpened(notificationOpenedCallback)
+              .endInit();
+
+             }
       });
     }
   }
